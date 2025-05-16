@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Surprise</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      overflow: hidden;
+    }
+    .page {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      padding: 40px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: opacity 0.8s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .active {
+      display: flex;
+      opacity: 1;
+    }
+    button {
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    button:hover {
+      filter: brightness(90%);
+    }
+
+    /* Page 1 - Warm Welcome */
+    #page1 {
+      background: radial-gradient(circle at center, #ff9a9e, #fad0c4);
+      color: #6a0d1f;
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: 1.2px;
+      box-shadow: inset 0 0 50px 15px #ffe6e9;
+    }
+    #page1 p {
+      font-weight: 400;
+      margin-top: 15px;
+      font-size: 1.3rem;
+      color: #8b2230;
+    }
+    #page1 button {
+      background-color: #b8323a;
+      color: white;
+    }
+
+    /* Page 2 - Countdown with animations */
+    #page2 {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #f0e9ff;
+      font-weight: 700;
+      overflow: hidden;
+      position: relative;
+      flex-direction: column;
+    }
+    #page2 h1 {
+      font-size: 3rem;
+      text-shadow: 0 0 10px #c2a1ff;
+      z-index: 10;
+      margin-bottom: 20px;
+    }
+    #countdown {
+      font-size: 6rem;
+      font-family: 'Courier New', Courier, monospace;
+      text-shadow: 0 0 25px #fff;
+      z-index: 10;
+    }
+
+    /* Balloon and heart styles */
+    .balloon, .heart, .sprinkler {
+      position: absolute;
+      bottom: -150px;
+      pointer-events: none;
+      opacity: 0.85;
+      animation-timing-function: ease-out;
+    }
+    .balloon {
+      width: 50px;
+      height: 70px;
+      background: radial-gradient(circle at 40% 30%, #ff6b6b, #c43a3a);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation-name: floatUp;
+      animation-duration: 8s;
+      animation-iteration-count: infinite;
+    }
+    .balloon.blue {
+      background: radial-gradient(circle at 40% 30%, #6bb1ff, #3a7ec4);
+    }
+    .balloon.yellow {
+      background: radial-gradient(circle at 40% 30%, #ffe66d, #c4b33a);
+    }
+    .balloon.green {
+      background: radial-gradient(circle at 40% 30%, #6bff99, #3ac46a);
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 22px;
+      width: 5px;
+      height: 20px;
+      background: #333;
+      border-radius: 2px;
+      filter: brightness(0.5);
+      animation: stringSwing 4s ease-in-out infinite;
+      transform-origin: top center;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.85;
+      }
+      50% {
+        transform: translateY(-150vh) translateX(20px) rotate(10deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.85;
+      }
+    }
+
+    @keyframes stringSwing {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(15deg); }
+    }
+
+    /* Hearts */
+    .heart {
+      width: 30px;
+      height: 30px;
+      background-color: #ff4b6e;
+      clip-path: polygon(
+        50% 0%,
+        100% 35%,
+        80% 100%,
+        50% 80%,
+        20% 100%,
+        0% 35%
+      );
+      animation-name: floatUpHeart;
+      animation-duration: 6s;
+      animation-iteration-count: infinite;
+      filter: drop-shadow(0 0 2px #ff3a5a);
+    }
+    @keyframes floatUpHeart {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateY(-120vh) translateX(-10px) scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Sprinklers - small colored dots */
+    .sprinkler {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation-name: sprinkleMove;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+    .sprinkler.red { background: #ff4757; }
+    .sprinkler.yellow { background: #fffa65; }
+    .sprinkler.green { background: #2ed573; }
+    .sprinkler.blue { background: #1e90ff; }
+    @keyframes sprinkleMove {
+      0% {
+        transform: translate(0,0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(100px, -120px);
+        opacity: 0;
+      }
+    }
+
+    /* Page 3 - Special Gift */
+    #page3 {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1050&q=80') no-repeat center center/cover;
+      color: white;
+      text-shadow: 0 0 8px black;
+      font-weight: 700;
+      flex-direction: column;
+    }
+    #page3 button {
+      background-color: rgba(255, 99, 71, 0.85);
+      color: white;
+      font-weight: 700;
+      font-size: 1.4rem;
+      z-index: 10;
+    }
+
+    /* Page 4 - Notes */
+    #page4 {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      color: #4a1a00;
+      font-weight: 600;
+    }
+    #page4 .card-box {
+      background-color: rgba(255,255,255,0.85);
+      padding: 25px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      max-width: 600px;
+      line-height: 1.5;
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #3b2200;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #page4 button {
+      background-color: #d35d0f;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 10px rgba(211, 93, 15, 0.6);
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Page 5 - The Card */
+    #page5 {
+      background: radial-gradient(circle, #ffe47a, #ffb347);
+      color: #6e4a00;
+      font-weight: 700;
+      font-size: 2.2rem;
+      padding: 50px 20px;
+      letter-spacing: 1.2px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    #page5 p {
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-top: 20px;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="page1" class="page active">
+    <h1>🎁 There’s a surprise for you!</h1>
+    <p>Click the button below to start your special birthday experience.</p>
+    <button onclick="nextPage('page2')">Let’s Go!</button>
+  </div>
+
+  <div id="page2" class="page">
+    <h1>⏳ Countdown to your surprise...</h1>
+    <div id="countdown">5</div>
+    <!-- Balloons -->
+    <div class="balloon" style="left:10%; animation-delay: 0s;"></div>
+    <div class="balloon blue" style="left:25%; animation-delay: 2s;"></div>
+    <div class="balloon yellow" style="left:40%; animation-delay: 1s;"></div>
+    <div class="balloon green" style="left:55%; animation-delay: 3s;"></div>
+    <div class="balloon" style="left:70%; animation-delay: 1.5s;"></div>
+
+    <!-- Hearts -->
+    <div class="heart" style="left:15%; animation-delay: 1s;"></div>
+    <div class="heart" style="left:35%; animation-delay: 2.5s;"></div>
+    <div class="heart" style="left:50%; animation-delay: 3.2s;"></div>
+    <div class="heart" style="left:65%; animation-delay: 1.8s;"></div>
+    <div class="heart" style="left:80%; animation-delay: 2.8s;"></div>
+
+    <!-- Sprinklers -->
+    <div class="sprinkler red" style="left:20%; bottom:50px; animation-duration: 4s; animation-delay: 0s;"></div>
+    <div class="sprinkler yellow" style="left:45%; bottom:70px; animation-duration: 3.5s; animation-delay: 1.2s;"></div>
+    <div class="sprinkler green" style="left:60%; bottom:40px; animation-duration: 4.5s; animation-delay: 0.5s;"></div>
+    <div class="sprinkler blue" style="left:75%; bottom:60px; animation-duration: 3.8s; animation-delay: 1s;"></div>
+  </div>
+
+  <div id="page3" class="page">
+    <h1>🎉 Something Special For You!</h1>
+    <button onclick="nextPage('page4')">See Notes</button>
+  </div>
+
+  <div id="page4" class="page">
+    <div class="card-box">
+      <p>🌟 You are amazing. You light up every room and make every moment special.</p>
+      <p>💖 Never forget how loved and appreciated you are!</p>
+    </div>
+    <button onclick="nextPage('page5')">Open Your Card</button>
+  </div>
+
+  <div id="page5" class="page">
+    <h1>🎂 Happy Birthday!</h1>
+    <p>Wishing you all the joy, laughter, and cake you deserve! May this year bring you endless happiness and beautiful memories.</p>
+  </div>
+
+  <script>
+    function nextPage(id) {
+      document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+});
+document.getElementById(id).classList.add('active');
+  // If page2, start countdown & animation
+  if (id === 'page2') {
+    startCountdown();
+  }
+}
+
+function startCountdown() {
+  let count = 5;
+  const countdownElem = document.getElementById('countdown');
+  countdownElem.textContent = count;
+
+  const interval = setInterval(() => {
+    count--;
+    countdownElem.textContent = count > 0 ? count : '🎉';
+    if (count <= 0) {
+      clearInterval(interval);
+      setTimeout(() => {
+        nextPage('page3');
+      }, 1500);
+    }
+  }, 1000);
+}
+</script> </body> </html>
